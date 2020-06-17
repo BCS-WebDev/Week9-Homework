@@ -6,7 +6,7 @@ const $noteList = $(".list-container .list-group");
 
 // activeNote is used to keep track of the note in the textarea
 var activeNote = {};
-var currentNote = {};
+var currentNote = {};   // current note to temporarily keep unsaved note
 
 // A function for getting all notes from the db
 const getNotes = function() {
@@ -23,7 +23,7 @@ const saveNote = function(note) {
     data: note,
     method: "POST",
     error: function(XMLHttpRequest, textStatus, errorThrown) {   // error catch - for duplicate note titles
-        alert(XMLHttpRequest.responseText);
+        alert(XMLHttpRequest.responseText);   // alert with response error message
     }
   });
 };
@@ -98,8 +98,8 @@ const handleNoteView = function() {
 
 // Sets the activeNote to and empty object and allows the user to enter a new note
 const handleNewNoteView = function() {
-  if (currentNote.title) {
-    $noteTitle.attr("readonly", false);
+  if (currentNote.title) {    // allow user to return to unsaved note from other note viewing
+    $noteTitle.attr("readonly", false);   
     $noteText.attr("readonly", false);
     $noteTitle.val(currentNote.title);
     $noteText.val(currentNote.text);
