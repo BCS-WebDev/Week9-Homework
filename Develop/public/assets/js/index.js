@@ -6,6 +6,7 @@ const $noteList = $(".list-container .list-group");
 
 // activeNote is used to keep track of the note in the textarea
 var activeNote = {};
+var currentNote = {};
 
 // A function for getting all notes from the db
 const getNotes = function() {
@@ -20,7 +21,10 @@ const saveNote = function(note) {
   return $.ajax({
     url: "/api/notes",
     data: note,
-    method: "POST"
+    method: "POST",
+    error: function(XMLHttpRequest, textStatus, errorThrown) {   // error catch - for duplicate note titles
+        alert(XMLHttpRequest.responseText);
+    }
   });
 };
 
@@ -36,7 +40,7 @@ const deleteNote = function(id) {
 const renderActiveNote = function() {
   $saveNoteBtn.hide();
 
-  if (activeNote.id) {
+  if (activeNote.title) {
     $noteTitle.attr("readonly", true);
     $noteText.attr("readonly", true);
     $noteTitle.val(activeNote.title);
@@ -71,11 +75,11 @@ const handleNoteDelete = function(event) {
     .parent(".list-group-item")
     .data();
 
-  if (activeNote.id === note.id) {
+  if (activeNote.title === note.title) {
     activeNote = {};
   }
 
-  deleteNote(note.id).then(function() {
+  deleteNote(note.title).then(function() {
     getAndRenderNotes();
     renderActiveNote();
   });
@@ -84,13 +88,27 @@ const handleNoteDelete = function(event) {
 // Sets the activeNote and displays it
 const handleNoteView = function() {
   activeNote = $(this).data();
+  currentNote = {
+    title: $noteTitle.val(),
+    text: $noteText.val()
+  };
+
   renderActiveNote();
 };
 
 // Sets the activeNote to and empty object and allows the user to enter a new note
 const handleNewNoteView = function() {
-  activeNote = {};
-  renderActiveNote();
+  if (currentNote.title) {
+    $noteTitle.attr("readonly", false);
+    $noteText.attr("readonly", false);
+    $noteTitle.val(currentNote.title);
+    $noteText.val(currentNote.text);
+
+    currentNote = {};
+  } else {
+    activeNote = {};
+    renderActiveNote();
+  }
 };
 
 // If a note's title or text are empty, hide the save button
@@ -141,3 +159,4 @@ $noteText.on("keyup", handleRenderSaveBtn);
 
 // Gets and renders the initial list of notes
 getAndRenderNotes();
+handleRenderSaveBtn();
