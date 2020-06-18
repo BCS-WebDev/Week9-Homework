@@ -7,6 +7,7 @@ const $noteList = $(".list-container .list-group");
 // activeNote is used to keep track of the note in the textarea
 var activeNote = {};
 var currentNote = {};   // current note to temporarily keep unsaved note
+var unsavedNote = true;
 
 // A function for getting all notes from the db
 const getNotes = function() {
@@ -28,6 +29,15 @@ const saveNote = function(note) {
   });
 };
 
+// A function for updating a note in the db
+const updateNote = function(note) {
+    return $.ajax({
+      url: "/api/notes/update",
+      data: note,
+      method: "POST",
+    });
+};
+
 // A function for deleting a note from the db
 const deleteNote = function(id) {
   return $.ajax({
@@ -42,7 +52,7 @@ const renderActiveNote = function() {
 
   if (activeNote.title) {
     $noteTitle.attr("readonly", true);
-    $noteText.attr("readonly", true);
+    $noteText.attr("readonly", false);
     $noteTitle.val(activeNote.title);
     $noteText.val(activeNote.text);
   } else {
@@ -51,6 +61,8 @@ const renderActiveNote = function() {
     $noteTitle.val("");
     $noteText.val("");
   }
+
+  handleRenderSaveBtn();
 };
 
 // Get the note data from the inputs, save it to the db and update the view
@@ -60,10 +72,18 @@ const handleNoteSave = function() {
     text: $noteText.val()
   };
 
-  saveNote(newNote).then(function(data) {
-    getAndRenderNotes();
-    renderActiveNote();
-  });
+  if ($noteTitle.attr("readonly")) {   // if title is read only (saved note view)
+    updateNote(newNote).then(function(data) {
+        activeNote = newNote;
+        getAndRenderNotes();
+        renderActiveNote();
+    });
+  } else {
+    saveNote(newNote).then(function(data) {
+        getAndRenderNotes();
+        renderActiveNote();
+    });
+  }
 };
 
 // Delete the clicked note
@@ -88,11 +108,15 @@ const handleNoteDelete = function(event) {
 // Sets the activeNote and displays it
 const handleNoteView = function() {
   activeNote = $(this).data();
-  currentNote = {
-    title: $noteTitle.val(),
-    text: $noteText.val()
-  };
 
+  if (unsavedNote) {
+      unsavedNote = false;
+    currentNote = {
+        title: $noteTitle.val(),
+        text: $noteText.val()
+    };
+  }
+ 
   renderActiveNote();
 };
 
@@ -104,6 +128,7 @@ const handleNewNoteView = function() {
     $noteTitle.val(currentNote.title);
     $noteText.val(currentNote.text);
 
+    unsavedNote = true;
     currentNote = {};
   } else {
     activeNote = {};
@@ -145,6 +170,11 @@ const renderNoteList = function(notes) {
 
 // Gets notes from the db and renders them to the sidebar
 const getAndRenderNotes = function() {
+    $noteTitle.attr("readonly", false);
+    $noteText.attr("readonly", false);
+    $noteTitle.val("");
+    $noteText.val("");
+
   return getNotes().then(function(data) {
     renderNoteList(data);
   });

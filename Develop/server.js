@@ -51,6 +51,24 @@ app.post("/api/notes", function(req, res) {   // post new note
     res.status(200).send("New note added.");   // send success status 200 with success message
 });
 
+app.post("/api/notes/update", function(req, res) {   // update existing note
+    var updateNote = req.body;   // get request json object
+
+    const notes = JSON.parse(fs.readFileSync("./db/db.json", "utf8"));  // read from db.json and parse
+
+    for (var i = 0; i < notes.length; i++) {   // check for existing title 
+        if (updateNote.title === notes[i].title) {    // if titles match
+            notes[i].text = updateNote.text;   // update text
+
+            break; // break loop
+        }
+    }
+    
+    fs.writeFileSync("./db/db.json", JSON.stringify(notes));  // overwrite db.json with new stringified notes array
+
+    res.status(200).send("Note updated.");   // send success status 200 with success message
+});
+
 // DELETE routes
 app.delete("/api/notes/:id", function(req, res) {   // delete target note
     var noteToDelete = req.params.id;   // get target note title from request parameter

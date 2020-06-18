@@ -17,12 +17,12 @@ stored indefinitely.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; This time we will implement a backend for an existing
 frontend website. The website allows for the user to save notes, view saved notes, and
 delete saved notes. A feature has been added to keep an unsaved note, to which the user can
-return, if a saved note is clicked for viewing. Another feature to update saved notes was
-considered but decided against for sake of efficiency.
+return, if a saved note is clicked for viewing. Another feature to update the text content of
+saved notes was implemented. 
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; On the server side, we will use express to set up 
 routes to USE, GET, POST, & DELETE methods that accesses the database for notes and
-responds with their respectice actions and responses. One notable feature is that if the user
+responds with their respectice actions and responses. A notable feature is that if the user
 tries to add a note with a title that exists within the database, the server will respond
 with an error, alerting the user of the conflict.
 
