@@ -27,7 +27,7 @@ tries to add a note with a title that exists within the database, the server wil
 with an error, alerting the user of the conflict.
 
 ## Installation
-Install `node.js` and run `npm install` under the Develop directory to install the necessary node packages.
+Install `node.js` and run `npm install` to install the necessary node packages.
 
 * Installs:
     - express node package 
