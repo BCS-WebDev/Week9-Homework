@@ -1,6 +1,8 @@
 # Note Taker
 BootCampSpot Web Development - Week 9 Homework
 
+![Preview](https://github.com/BCS-WebDev/Week9-Homework/blob/master/public/assets/NoteTaker-min.gif)
+
 ## Notes on Express & Notes
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Notes can be useful in keeping track of daily
 tasks and short term to-do lists. They serve as reminders that people can set so that
@@ -32,6 +34,8 @@ Install `node.js` and run `npm install` to install the necessary node packages.
 * Installs:
     - express node package 
     - path node package
+* For use:
+    - https://fast-ridge-70424.herokuapp.com/
 
 ## Usage
 - Run `node server.js` from the Develop directory to start the local server.
